@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "shellwords": "^1.0.1"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20231121.0"
+  }
+}
