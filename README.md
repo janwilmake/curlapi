@@ -8,3 +8,4 @@ Motivation: Provide a universal tool for LLM to use HTTP. Together with knowledg
 
 - Host this yourself at your cloudflare (there is no auth, so please do this at a covert URL, or add your own auth)
 - You can use this as a tool. The easiest way is to make a GPT using ChatGPT and use the OpenAPI defined at [public/openapi.json](public/openapi.json) with YOUR_SERVER_URL replaced.
+- If you want to try it using MCP (the last MCP you need), see https://github.com/mcp-get/community-servers/tree/main/src/server-curl
