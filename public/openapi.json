@@ -1,0 +1,225 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "CURL Executor API",
+    "description": "An API that parses and executes CURL commands through a REST interface",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "YOUR_SERVER_URL",
+      "description": "Production server"
+    }
+  ],
+  "paths": {
+    "/{encodedCurlCommand}": {
+      "get": {
+        "summary": "Execute CURL Command",
+        "description": "Parses and executes the URL-encoded CURL command and returns the result",
+        "operationId": "executeCurlCommand",
+        "parameters": [
+          {
+            "name": "encodedCurlCommand",
+            "in": "path",
+            "description": "URL-encoded CURL command to execute",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "curl%20https%3A%2F%2Fexample.com"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully executed CURL command with response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200,
+                      "description": "HTTP status code from the executed request"
+                    },
+                    "statusText": {
+                      "type": "string",
+                      "example": "OK",
+                      "description": "HTTP status text from the executed request"
+                    },
+                    "headers": {
+                      "type": "object",
+                      "description": "Response headers from the executed request",
+                      "additionalProperties": {
+                        "type": "string"
+                      },
+                      "example": {
+                        "content-type": "text/html; charset=utf-8",
+                        "content-length": "1256"
+                      }
+                    },
+                    "body": {
+                      "description": "Response body from the executed request",
+                      "oneOf": [
+                        {
+                          "type": "string",
+                          "description": "Text response"
+                        },
+                        {
+                          "type": "object",
+                          "description": "JSON response"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - could not parse CURL command or command too long",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid curl command"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - URL not allowed for security reasons",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "URL not allowed for security reasons"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed - only GET requests are supported",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Method not allowed"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error executing the CURL command",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "An error occurred"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "options": {
+        "summary": "CORS Preflight for Command",
+        "description": "Handles CORS preflight requests for curl command execution",
+        "operationId": "corsPreflightCommand",
+        "parameters": [
+          {
+            "name": "encodedCurlCommand",
+            "in": "path",
+            "description": "URL-encoded CURL command",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "CORS headers returned",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string",
+                  "example": "*"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string",
+                  "example": "GET, OPTIONS"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string",
+                  "example": "Content-Type"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ParsedCurl": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Target URL of the CURL command",
+            "example": "https://example.com/api"
+          },
+          "method": {
+            "type": "string",
+            "description": "HTTP method to use",
+            "example": "GET",
+            "enum": ["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"]
+          },
+          "header": {
+            "type": "object",
+            "description": "HTTP headers to include in the request",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "example": {
+              "Content-Type": "application/json",
+              "Authorization": "Bearer token123"
+            }
+          },
+          "body": {
+            "type": "string",
+            "description": "Request body for POST, PUT, and PATCH requests",
+            "example": "name=test&value=example"
+          }
+        },
+        "required": ["method", "header"]
+      }
+    }
+  }
+}
