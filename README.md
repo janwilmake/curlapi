@@ -4,10 +4,6 @@ Cloudflare worker that parses the /{urlencoded-curl-request}, executes it with f
 
 Motivation: Provide a universal tool for LLM to use HTTP. Together with knowledge on how APIs work such as [OpenAPI](https://github.com/OAI/OpenAPI-Specification), [Agents JSON](https://github.com/wild-card-ai/agents-json) or [SLOP](https://github.com/agnt-gg/slop), this provides the LLM all that is needed to use HTTP APIs.
 
-# CURL Executor API
-
-This API lets you run CURL commands through a REST interface.
-
 ## Basic Usage
 
 Send a GET request to:
